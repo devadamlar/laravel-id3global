@@ -1,0 +1,39 @@
+{
+    "name": "devadamlar/laravel-id3global",
+	"description": "Acts as an adapter between Laravel Eloquent and GBG ID3global service",
+	"keywords": ["laravel", "id3global", "GBG", "GBG PLC", "ID3Global", "identity verification", "identity"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Elnur Hajiyev",
+            "email": "elnurvl@gmail.com"
+        }
+    ],
+    "require": {
+		"php": "^7.4|^8.0",
+        "illuminate/support": "^8.57",
+        "madmatt/id3global-service": "^1.0"
+	},
+    "require-dev": {
+        "orchestra/testbench": "^6.20",
+		"phpunit/phpunit": "^9.0",
+        "mockery/mockery": "^1.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "DevAdamlar\\LaravelId3global\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DevAdamlar\\LaravelId3global\\Tests\\": "tests/"
+        }
+    },
+	"extra": {
+        "laravel": {
+            "providers": [
+                "DevAdamlar\\LaravelId3global\\ServiceProvider"
+            ]
+        }
+    }
+}
