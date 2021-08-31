@@ -15,6 +15,8 @@ use stdClass;
 
 trait Verifiable
 {
+    private array $overrides;
+
     /**
      * Sends an AuthenticateSP request
      *
@@ -46,9 +48,9 @@ trait Verifiable
     {
         $this->overrides = $overrides;
 
-        $personalDetails = $this->makePersonalDetails($overrides['Personal']['PersonalDetails'] ?? []);
-        $addresses = $this->makeAddressContainer($overrides['Addresses'] ?? []);
-        $contactDetails = $this->makeContactDetails($overrides['ContactDetails'] ?? []);
+        $personalDetails = $this->makePersonalDetails();
+        $addresses = $this->makeAddressContainer();
+        $contactDetails = $this->makeContactDetails();
 
         $identity = new Identity();
         $identity->setPersonalDetails($personalDetails)->setAddresses($addresses)->setContactDetails($contactDetails);
@@ -56,31 +58,32 @@ trait Verifiable
         return $identity;
     }
 
-    private function makePersonalDetails(array $overrides): PersonalDetails
+    private function makePersonalDetails(): PersonalDetails
     {
+        $keyPrefix = 'Personal.PersonalDetails.';
         $personalDetails = new PersonalDetails();
         $personalDetails
-            ->setTitle($this->getField('Title', 'title', $overrides))
-            ->setForename($this->getField('Forename', 'first_name', $overrides))
-            ->setMiddleName($this->getField('MiddleName', 'middle_name', $overrides))
-            ->setSurname($this->getField('Surname', 'last_name', $overrides))
-            ->setGender($this->getField('Gender', 'gender', $overrides))
-            ->setDateOfBirth($this->getField('DateOfBirth', 'birthday', $overrides))
-            ->setCountryOfBirth($this->getField('CountryOfBirth', 'birth_country', $overrides));
+            ->setTitle($this->getValue($keyPrefix . 'Title', 'title'))
+            ->setForename($this->getValue($keyPrefix . 'Forename', 'first_name'))
+            ->setMiddleName($this->getValue($keyPrefix . 'MiddleName', 'middle_name'))
+            ->setSurname($this->getValue($keyPrefix . 'Surname', 'last_name'))
+            ->setGender($this->getValue($keyPrefix . 'Gender', 'gender'))
+            ->setDateOfBirth($this->getValue($keyPrefix . 'DateOfBirth', 'birthday'))
+            ->setCountryOfBirth($this->getValue($keyPrefix . 'CountryOfBirth', 'birth_country'));
 
         return $personalDetails;
     }
 
-    private function makeAddressContainer(array $overrides): AddressContainer
+    private function makeAddressContainer(): AddressContainer
     {
-        $currentAddressOverrides = $overrides['CurrentAddress'] ?? [];
+        $keyPrefix = 'Addresses.';
 
         $currentAddress = new FixedFormatAddress();
         $currentAddress
-            ->setStreet($this->getField('Street', 'street', $currentAddressOverrides))
-            ->setZipPostcode($this->getField('ZipPostcode', 'post_code', $currentAddressOverrides))
-            ->setCity($this->getField('City', 'city', $currentAddressOverrides))
-            ->setCountry($this->getField('Country', 'country', $currentAddressOverrides));
+            ->setStreet($this->getValue($keyPrefix . 'CurrentAddress.Street', 'street'))
+            ->setZipPostcode($this->getValue($keyPrefix . 'CurrentAddress.ZipPostcode', 'post_code'))
+            ->setCity($this->getValue($keyPrefix . 'CurrentAddress.City', 'city'))
+            ->setCountry($this->getValue($keyPrefix . 'CurrentAddress.Country', 'country'));
 
         $addressContainer = new AddressContainer();
 
@@ -89,23 +92,24 @@ trait Verifiable
         return $addressContainer;
     }
 
-    private function makeContactDetails(array $overrides): ContactDetails
+    private function makeContactDetails(): ContactDetails
     {
+        $keyPrefix = 'ContactDetails.';
         $contactDetails = new ContactDetails();
-        $contactDetails->setEmail($this->getField('Email', 'email', $overrides));
+        $contactDetails->setEmail($this->getValue($keyPrefix . 'Email', 'email'));
 
         return $contactDetails;
     }
 
-    private function getField(string $name, string $default, array $override)
+    private function getValue(string $fieldName, string $defaultAttribute)
     {
-        if (array_key_exists($name, $override)) {
-            return $override[$name];
+        if (array_key_exists($fieldName, $this->overrides)) {
+            return $this->overrides[$fieldName];
         }
-        if (array_key_exists($name, $this->verifiables)) {
-            return $this->{$this->verifiables[$name]};
+        if (array_key_exists($fieldName, $this->verifiables)) {
+            return $this->{$this->verifiables[$fieldName]};
         }
 
-        return $this->$default;
+        return $this->$defaultAttribute;
     }
 }

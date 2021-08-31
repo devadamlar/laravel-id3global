@@ -22,7 +22,7 @@ class User extends Model
     public ?string $country;
 
     private array $verifiables = [
-        'Gender' => 'sex',
+        'Personal.PersonalDetails.Gender' => 'sex',
     ];
 
     public function __construct(array $attributes = [])

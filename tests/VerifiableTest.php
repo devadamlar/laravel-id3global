@@ -82,19 +82,9 @@ class VerifiableTest extends TestCase
     {
         // Act
         $identity = $this->user->makeIdentity([
-            'Personal' => [
-                'PersonalDetails' => [
-                    'CountryOfBirth' => 'Birth Country',
-                ],
-            ],
-            'Addresses' => [
-                'CurrentAddress' => [
-                    'Country' => 'Overridden Country',
-                ],
-            ],
-            'ContactDetails' => [
-                'Email' => 'test@email.com',
-            ]
+            'Personal.PersonalDetails.CountryOfBirth' => 'Birth Country',
+            'Addresses.CurrentAddress.Country' => 'Overridden Country',
+            'ContactDetails.Email' => 'test@email.com'
         ]);
 
         // Assert
