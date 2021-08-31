@@ -2,9 +2,10 @@
 
 namespace DevAdamlar\LaravelId3global\Traits;
 
-
+use Exception;
 use ID3Global\Gateway\GlobalAuthenticationGateway;
 use ID3Global\Identity\Address\AddressContainer;
+use ID3Global\Identity\Address\FixedFormatAddress;
 use ID3Global\Identity\ContactDetails;
 use ID3Global\Identity\Identity;
 use ID3Global\Identity\PersonalDetails;
@@ -14,6 +15,15 @@ use stdClass;
 
 trait Verifiable
 {
+    /**
+     * Sends an AuthenticateSP request
+     *
+     * @param string $profileId
+     *
+     * @return stdClass AuthenticateSPResponse
+     *
+     * @throws Exception
+     */
     public function verify(string $profileId): stdClass
     {
         $gateway = App::make(GlobalAuthenticationGateway::class);
@@ -26,6 +36,11 @@ trait Verifiable
         return $service->getLastVerifyIdentityResponse();
     }
 
+    /**
+     * Makes an Identity object to be sent to the ID3global API
+     *
+     * @return Identity
+     */
     public function makeIdentity(): Identity
     {
         $personalDetails = $this->makePersonalDetails();
@@ -40,16 +55,49 @@ trait Verifiable
 
     private function makePersonalDetails(): PersonalDetails
     {
-        return new PersonalDetails();
+        $personalDetails = new PersonalDetails();
+        $personalDetails
+            ->setTitle($this->getField('Title', 'title'))
+            ->setForename($this->getField('Forename', 'first_name'))
+            ->setMiddleName($this->getField('MiddleName', 'middle_name'))
+            ->setSurname($this->getField('Surname', 'last_name'))
+            ->setGender($this->getField('Gender', 'gender'))
+            ->setDateOfBirth($this->getField('DateOfBirth', 'birthday'))
+            ->setCountryOfBirth($this->getField('CountryOfBirth', 'birth_country'));
+
+        return $personalDetails;
     }
 
     private function makeAddressContainer(): AddressContainer
     {
-        return new AddressContainer();
+        $currentAddress = new FixedFormatAddress();
+        $currentAddress
+            ->setStreet($this->getField('Street', 'street'))
+            ->setZipPostcode($this->getField('ZipPostcode', 'post_code'))
+            ->setCity($this->getField('City', 'city'))
+            ->setCountry($this->getField('Country', 'country'));
+
+        $addressContainer = new AddressContainer();
+
+        $addressContainer->setCurrentAddress($currentAddress);
+
+        return $addressContainer;
     }
 
     private function makeContactDetails(): ContactDetails
     {
-        return new ContactDetails();
+        $contactDetails = new ContactDetails();
+        $contactDetails->setEmail($this->getField('Email', 'email'));
+
+        return $contactDetails;
+    }
+
+    private function getField(string $name, string $default)
+    {
+        if (array_key_exists($name, $this->verifiables)) {
+            return $this->{$this->verifiables[$name]};
+        }
+
+        return $this->$default;
     }
 }
