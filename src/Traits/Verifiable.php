@@ -11,6 +11,7 @@ use ID3Global\Identity\Identity;
 use ID3Global\Identity\PersonalDetails;
 use ID3Global\Service\GlobalAuthenticationService;
 use Illuminate\Support\Facades\App;
+use InvalidArgumentException;
 use stdClass;
 
 trait Verifiable
@@ -95,8 +96,25 @@ trait Verifiable
     private function makeContactDetails(): ContactDetails
     {
         $keyPrefix = 'ContactDetails.';
+
+        $landlineNumber = $this->getValue($keyPrefix . 'LandTelephone.Number', 'landline');
+        $mobileNumber = $this->getValue($keyPrefix . 'MobileTelephone.Number', 'mobile');
+        $workNumber = $this->getValue($keyPrefix . 'WorkTelephone.Number', 'work_phone');
+
+        $landline = new ContactDetails\PhoneNumber();
+        $mobile = new ContactDetails\PhoneNumber();
+        $workPhone = new ContactDetails\PhoneNumber();
+
+        $landline->setNumber($landlineNumber);
+        $mobile->setNumber($mobileNumber);
+        $workPhone->setNumber($workNumber);
+
         $contactDetails = new ContactDetails();
-        $contactDetails->setEmail($this->getValue($keyPrefix . 'Email', 'email'));
+        $contactDetails
+            ->setEmail($this->getValue($keyPrefix . 'Email', 'email'))
+            ->setLandTelephone($landline)
+            ->setMobileTelephone($mobile)
+            ->setWorkTelephone($workPhone);
 
         return $contactDetails;
     }
@@ -107,7 +125,17 @@ trait Verifiable
             return $this->overrides[$fieldName];
         }
         if (array_key_exists($fieldName, $this->verifiables)) {
-            return $this->{$this->verifiables[$fieldName]};
+            $attributeTree = explode('.', $this->verifiables[$fieldName]);
+            $value = $this;
+            foreach ($attributeTree as $key => $attribute) {
+                if ($value == null) {
+                    throw new InvalidArgumentException("Could not access $attribute on {$attributeTree[$key - 1]}");
+                }
+
+                $value = $value->{$attribute};
+            }
+
+            return $value;
         }
 
         return $this->$defaultAttribute;

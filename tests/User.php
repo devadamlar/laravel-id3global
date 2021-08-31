@@ -20,9 +20,12 @@ class User extends Model
     public ?string $post_code;
     public ?string $city;
     public ?string $country;
+    public ?string $landline;
+    public ?string $mobile;
+    public ?string $work_phone;
 
-    private array $verifiables = [
-        'Personal.PersonalDetails.Gender' => 'sex',
+    public array $verifiables = [
+        'Personal.PersonalDetails.Gender' => 'sex'
     ];
 
     public function __construct(array $attributes = [])
@@ -40,5 +43,13 @@ class User extends Model
         $this->post_code = $this->faker->postcode;
         $this->city = $this->faker->city;
         $this->country = $this->faker->country;
+        $this->landline = $this->faker->phoneNumber;
+        $this->mobile = $this->faker->phoneNumber;
+        $this->work_phone = $this->faker->phoneNumber;
+    }
+
+    public function contact()
+    {
+        return $this->hasOne(Contact::class);
     }
 }
