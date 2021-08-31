@@ -77,4 +77,29 @@ class VerifiableTest extends TestCase
         $this->assertSame($this->user->country, $identity->getAddresses()->getCurrentAddress()->getCountry());
         $this->assertSame($this->user->email, $identity->getContactDetails()->getEmail());
     }
+
+    public function test_override_identity_properties()
+    {
+        // Act
+        $identity = $this->user->makeIdentity([
+            'Personal' => [
+                'PersonalDetails' => [
+                    'CountryOfBirth' => 'Birth Country',
+                ],
+            ],
+            'Addresses' => [
+                'CurrentAddress' => [
+                    'Country' => 'Overridden Country',
+                ],
+            ],
+            'ContactDetails' => [
+                'Email' => 'test@email.com',
+            ]
+        ]);
+
+        // Assert
+        $this->assertSame('Birth Country', $identity->getPersonalDetails()->getCountryOfBirth());
+        $this->assertSame('Overridden Country', $identity->getAddresses()->getCurrentAddress()->getCountry());
+        $this->assertSame('test@email.com', $identity->getContactDetails()->getEmail());
+    }
 }
