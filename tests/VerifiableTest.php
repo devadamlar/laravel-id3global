@@ -57,7 +57,7 @@ class VerifiableTest extends TestCase
         $response = $this->user->verify('profile-id');
 
         // Assert
-        $this->assertSame(Identity::IDENTITY_BAND_PASS, $response->AuthenticateSPResult->BandText);
+        $this->assertSame(Identity::IDENTITY_BAND_PASS, $response);
     }
 
     public function test_make_identity_creates_identity_with_correct_properties()

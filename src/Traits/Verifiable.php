@@ -10,7 +10,6 @@ use ID3Global\Identity\PersonalDetails;
 use ID3Global\Service\GlobalAuthenticationService;
 use Illuminate\Support\Facades\App;
 use InvalidArgumentException;
-use stdClass;
 
 trait Verifiable
 {
@@ -22,17 +21,17 @@ trait Verifiable
      * @param string $profileId
      * @param int $profileVersion
      * @param array $overrides
-     * @return stdClass AuthenticateSPResponse
+     *
+     * @return string
      *
      */
-    public function verify(string $profileId, int $profileVersion = 0, array $overrides = []): stdClass
+    public function verify(string $profileId, int $profileVersion = 0, array $overrides = []): string
     {
         $identity = $this->makeIdentity($overrides);
 
         $service = App::make(GlobalAuthenticationService::class);
-        $service->verifyIdentity($identity, $profileId, $profileVersion);
 
-        return $service->getLastVerifyIdentityResponse();
+        return $service->verifyIdentity($identity, $profileId, $profileVersion);
     }
 
     /**
