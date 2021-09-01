@@ -2,8 +2,6 @@
 
 namespace DevAdamlar\LaravelId3global\Traits;
 
-use Exception;
-use ID3Global\Gateway\GlobalAuthenticationGateway;
 use ID3Global\Identity\Address\AddressContainer;
 use ID3Global\Identity\Address\FixedFormatAddress;
 use ID3Global\Identity\ContactDetails;
@@ -22,19 +20,17 @@ trait Verifiable
      * Sends an AuthenticateSP request
      *
      * @param string $profileId
+     * @param int $profileVersion
      * @param array $overrides
      * @return stdClass AuthenticateSPResponse
      *
-     * @throws Exception
      */
-    public function verify(string $profileId, array $overrides = []): stdClass
+    public function verify(string $profileId, int $profileVersion = 0, array $overrides = []): stdClass
     {
-        $gateway = App::make(GlobalAuthenticationGateway::class);
-
         $identity = $this->makeIdentity($overrides);
 
-        $service = new GlobalAuthenticationService($identity, $profileId, $gateway);
-        $service->verifyIdentity();
+        $service = App::make(GlobalAuthenticationService::class);
+        $service->verifyIdentity($identity, $profileId, $profileVersion);
 
         return $service->getLastVerifyIdentityResponse();
     }

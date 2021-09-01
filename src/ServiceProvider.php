@@ -3,6 +3,7 @@
 namespace DevAdamlar\LaravelId3global;
 
 use ID3Global\Gateway\GlobalAuthenticationGateway;
+use ID3Global\Service\GlobalAuthenticationService;
 use ID3Global\Stubs\Gateway\GlobalAuthenticationGatewayFake;
 use Illuminate\Foundation\Application;
 
@@ -13,14 +14,16 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $configPath = __DIR__ . '/../config/id3global.php';
         $this->mergeConfigFrom($configPath, 'id3global');
 
-        $this->app->bind(GlobalAuthenticationGateway::class, function (Application $app) {
-            if ($app->environment('testing')) {
-                return new GlobalAuthenticationGatewayFake(config('username'), config('password'));
-            }
-
+        $this->app->bind(GlobalAuthenticationService::class, function (Application $app) {
             $pilot = !$app->environment('Production');
 
-            return new GlobalAuthenticationGateway(config('username'), config('password'), [], $pilot);
+            $gateway = new GlobalAuthenticationGateway(config('username'), config('password'), [], $pilot);
+
+            if ($app->environment('testing')) {
+                $gateway = new GlobalAuthenticationGatewayFake(config('username'), config('password'));
+            }
+
+            return new GlobalAuthenticationService($gateway);
         });
     }
 
