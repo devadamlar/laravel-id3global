@@ -47,7 +47,7 @@ class Id3globalTest extends TestCase
     protected function getPackageProviders($app): array
     {
         return [
-            'DevAdamlar\LaravelId3global\ServiceProvider'
+            'DevAdamlar\LaravelId3global\ServiceProvider',
         ];
     }
 
@@ -83,8 +83,8 @@ class Id3globalTest extends TestCase
         // Act
         $identity = $this->user->makeInputData([
             'Personal.PersonalDetails.CountryOfBirth' => 'Birth Country',
-            'Addresses.CurrentAddress.Country' => 'Overridden Country',
-            'ContactDetails.Email' => 'test@email.com'
+            'Addresses.CurrentAddress.Country'        => 'Overridden Country',
+            'ContactDetails.Email'                    => 'test@email.com',
         ]);
 
         // Assert

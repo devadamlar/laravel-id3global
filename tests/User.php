@@ -25,7 +25,7 @@ class User extends InputDataModel
     public ?string $work_phone;
 
     protected array $authenticateSpFields = [
-        'Personal.PersonalDetails.Gender' => 'sex',
+        'Personal.PersonalDetails.Gender'       => 'sex',
         'ContactDetails.MobileTelephone.Number' => 'contact.mobile',
     ];
 

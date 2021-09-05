@@ -11,7 +11,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
     {
-        $configPath = __DIR__ . '/../config/id3global.php';
+        $configPath = __DIR__.'/../config/id3global.php';
         $this->mergeConfigFrom($configPath, 'id3global');
 
         $this->app->bind(GlobalAuthenticationService::class, function (Application $app) {
@@ -29,8 +29,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
 
     public function boot()
     {
-        $configPath = __DIR__ . '/../config/id3global.php';
+        $configPath = __DIR__.'/../config/id3global.php';
         $this->publishes([$configPath => config_path()], 'config');
     }
-
 }

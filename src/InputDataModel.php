@@ -25,17 +25,17 @@ class InputDataModel extends Model
     protected array $authenticateSpFields = [];
 
     /**
-     * Sends an AuthenticateSP request
+     * Sends an AuthenticateSP request.
      *
-     * @param string $profileId    The ID of the profile you want to use. Login to the ID3global's GlobalAdmin page to get the IDs.
-     * @param int $profileVersion  Version of the profile to be used. The latest version will be used if not specified.
-     * @param array $overrides     The array structure should correspond to the `GlobalInputData` class
-     *                             specified in ID3global's WSDL documentation.
-     *                             The array should be flat. You can use a dot separator to specify the nested properties.
-     *
-     * @return string
+     * @param string $profileId      The ID of the profile you want to use. Login to the ID3global's GlobalAdmin page to get the IDs.
+     * @param int    $profileVersion Version of the profile to be used. The latest version will be used if not specified.
+     * @param array  $overrides      The array structure should correspond to the `GlobalInputData` class
+     *                               specified in ID3global's WSDL documentation.
+     *                               The array should be flat. You can use a dot separator to specify the nested properties.
      *
      * @throws IdentityVerificationFailureException
+     *
+     * @return string
      */
     public function authenticateSp(string $profileId, int $profileVersion = 0, array $overrides = []): string
     {
@@ -50,10 +50,10 @@ class InputDataModel extends Model
     }
 
     /**
-     * Makes an Identity object from the Eloquent to be sent to the ID3global API
+     * Makes an Identity object from the Eloquent to be sent to the ID3global API.
      *
      * @param array $overrides The array structure should correspond to the `GlobalInputData` class
-     *                          specified in ID3global's WSDL documentation
+     *                         specified in ID3global's WSDL documentation
      *
      * @return Identity
      */
@@ -76,13 +76,13 @@ class InputDataModel extends Model
         $keyPrefix = 'Personal.PersonalDetails.';
         $personalDetails = new PersonalDetails();
         $personalDetails
-            ->setTitle($this->getValue($keyPrefix . 'Title', 'title'))
-            ->setForename($this->getValue($keyPrefix . 'Forename', 'first_name'))
-            ->setMiddleName($this->getValue($keyPrefix . 'MiddleName', 'middle_name'))
-            ->setSurname($this->getValue($keyPrefix . 'Surname', 'last_name'))
-            ->setGender($this->getValue($keyPrefix . 'Gender', 'gender'))
-            ->setDateOfBirth($this->getValue($keyPrefix . 'DateOfBirth', 'birthday'))
-            ->setCountryOfBirth($this->getValue($keyPrefix . 'CountryOfBirth', 'birth_country'));
+            ->setTitle($this->getValue($keyPrefix.'Title', 'title'))
+            ->setForename($this->getValue($keyPrefix.'Forename', 'first_name'))
+            ->setMiddleName($this->getValue($keyPrefix.'MiddleName', 'middle_name'))
+            ->setSurname($this->getValue($keyPrefix.'Surname', 'last_name'))
+            ->setGender($this->getValue($keyPrefix.'Gender', 'gender'))
+            ->setDateOfBirth($this->getValue($keyPrefix.'DateOfBirth', 'birthday'))
+            ->setCountryOfBirth($this->getValue($keyPrefix.'CountryOfBirth', 'birth_country'));
 
         return $personalDetails;
     }
@@ -93,10 +93,10 @@ class InputDataModel extends Model
 
         $currentAddress = new FixedFormatAddress();
         $currentAddress
-            ->setStreet($this->getValue($keyPrefix . 'CurrentAddress.Street', 'street'))
-            ->setZipPostcode($this->getValue($keyPrefix . 'CurrentAddress.ZipPostcode', 'post_code'))
-            ->setCity($this->getValue($keyPrefix . 'CurrentAddress.City', 'city'))
-            ->setCountry($this->getValue($keyPrefix . 'CurrentAddress.Country', 'country'));
+            ->setStreet($this->getValue($keyPrefix.'CurrentAddress.Street', 'street'))
+            ->setZipPostcode($this->getValue($keyPrefix.'CurrentAddress.ZipPostcode', 'post_code'))
+            ->setCity($this->getValue($keyPrefix.'CurrentAddress.City', 'city'))
+            ->setCountry($this->getValue($keyPrefix.'CurrentAddress.Country', 'country'));
 
         $addressContainer = new AddressContainer();
 
@@ -109,9 +109,9 @@ class InputDataModel extends Model
     {
         $keyPrefix = 'ContactDetails.';
 
-        $landlineNumber = $this->getValue($keyPrefix . 'LandTelephone.Number', 'landline');
-        $mobileNumber = $this->getValue($keyPrefix . 'MobileTelephone.Number', 'mobile');
-        $workNumber = $this->getValue($keyPrefix . 'WorkTelephone.Number', 'work_phone');
+        $landlineNumber = $this->getValue($keyPrefix.'LandTelephone.Number', 'landline');
+        $mobileNumber = $this->getValue($keyPrefix.'MobileTelephone.Number', 'mobile');
+        $workNumber = $this->getValue($keyPrefix.'WorkTelephone.Number', 'work_phone');
 
         $landline = new ContactDetails\PhoneNumber();
         $mobile = new ContactDetails\PhoneNumber();
@@ -123,7 +123,7 @@ class InputDataModel extends Model
 
         $contactDetails = new ContactDetails();
         $contactDetails
-            ->setEmail($this->getValue($keyPrefix . 'Email', 'email'))
+            ->setEmail($this->getValue($keyPrefix.'Email', 'email'))
             ->setLandTelephone($landline)
             ->setMobileTelephone($mobile)
             ->setWorkTelephone($workPhone);
