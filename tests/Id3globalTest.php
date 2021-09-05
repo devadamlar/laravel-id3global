@@ -8,10 +8,9 @@ use ID3Global\Identity\Address\FixedFormatAddress;
 use ID3Global\Identity\Identity;
 use ID3Global\Identity\PersonalDetails;
 use ID3Global\Stubs\Gateway\GlobalAuthenticationGatewayFake;
-use InvalidArgumentException;
 use Orchestra\Testbench\TestCase;
 
-class VerifiableTest extends TestCase
+class Id3globalTest extends TestCase
 {
     /**
      * @var User
@@ -55,7 +54,7 @@ class VerifiableTest extends TestCase
     public function test_verify_returns_valid_response()
     {
         // Act
-        $response = $this->user->verify('profile-id');
+        $response = $this->user->authenticateSp('profile-id');
 
         // Assert
         $this->assertSame(GlobalAuthenticationGatewayFake::IDENTITY_BAND_PASS, $response);
@@ -64,7 +63,7 @@ class VerifiableTest extends TestCase
     public function test_make_identity_creates_identity_with_correct_properties()
     {
         // Act
-        $identity = $this->user->makeIdentity();
+        $identity = $this->user->makeInputData();
 
         // Assert
         $this->assertNull($identity->getPersonalDetails()->getTitle());
@@ -77,16 +76,12 @@ class VerifiableTest extends TestCase
         $this->assertSame($this->user->post_code, $identity->getAddresses()->getCurrentAddress()->getZipPostcode());
         $this->assertSame($this->user->city, $identity->getAddresses()->getCurrentAddress()->getCity());
         $this->assertSame($this->user->country, $identity->getAddresses()->getCurrentAddress()->getCountry());
-        $this->assertSame($this->user->email, $identity->getContactDetails()->getEmail());
-        $this->assertSame($this->user->landline, $identity->getContactDetails()->getLandTelephone()->getNumber());
-        $this->assertSame($this->user->mobile, $identity->getContactDetails()->getMobileTelephone()->getNumber());
-        $this->assertSame($this->user->work_phone, $identity->getContactDetails()->getWorkTelephone()->getNumber());
     }
 
     public function test_override_identity_properties()
     {
         // Act
-        $identity = $this->user->makeIdentity([
+        $identity = $this->user->makeInputData([
             'Personal.PersonalDetails.CountryOfBirth' => 'Birth Country',
             'Addresses.CurrentAddress.Country' => 'Overridden Country',
             'ContactDetails.Email' => 'test@email.com'
@@ -103,27 +98,9 @@ class VerifiableTest extends TestCase
         // Arrange
         $contact = new Contact();
         $this->user->setRelation('contact', $contact);
-        $this->user->verifiables['ContactDetails.MobileTelephone.Number'] = 'contact.mobile';
 
         // Act
-        $identity = $this->user->makeIdentity();
-
-        // Assert
-        $this->assertSame($contact->mobile, $identity->getContactDetails()->getMobileTelephone()->getNumber());
-    }
-
-    public function test_invalid_relationship_access_throws_exception()
-    {
-        // Arrange
-        $contact = new Contact();
-        $this->user->setRelation('contact', $contact);
-        $this->user->verifiables['ContactDetails.MobileTelephone.Number'] = 'invalid_relationship.mobile';
-
-        $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessage('Could not access mobile on invalid_relationship');
-
-        // Act
-        $identity = $this->user->makeIdentity();
+        $identity = $this->user->makeInputData();
 
         // Assert
         $this->assertSame($contact->mobile, $identity->getContactDetails()->getMobileTelephone()->getNumber());

@@ -10,9 +10,10 @@ class Contact extends Model
 {
     use WithFaker;
 
-    public ?int $user_id;
     public string $email;
     public string $mobile;
+    private string $landline;
+    private string $work_phone;
 
     public function __construct(array $attributes = [])
     {
@@ -21,5 +22,7 @@ class Contact extends Model
 
         $this->email = $this->faker->email;
         $this->mobile = $this->faker->phoneNumber;
+        $this->landline = $this->faker->phoneNumber;
+        $this->work_phone = $this->faker->phoneNumber;
     }
 }

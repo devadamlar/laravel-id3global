@@ -3,13 +3,13 @@
 namespace DevAdamlar\LaravelId3global\Tests;
 
 use DateTime;
-use DevAdamlar\LaravelId3global\Traits\Verifiable;
-use Illuminate\Database\Eloquent\Model;
+use DevAdamlar\LaravelId3global\InputDataModel;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class User extends Model
+class User extends InputDataModel
 {
-    use Verifiable, WithFaker;
+    use WithFaker;
 
     public ?string $email;
     public ?string $first_name;
@@ -24,8 +24,9 @@ class User extends Model
     public ?string $mobile;
     public ?string $work_phone;
 
-    public array $verifiables = [
-        'Personal.PersonalDetails.Gender' => 'sex'
+    protected array $authenticateSpFields = [
+        'Personal.PersonalDetails.Gender' => 'sex',
+        'ContactDetails.MobileTelephone.Number' => 'contact.mobile',
     ];
 
     public function __construct(array $attributes = [])
@@ -48,7 +49,7 @@ class User extends Model
         $this->work_phone = $this->faker->phoneNumber;
     }
 
-    public function contact()
+    public function contact(): HasOne
     {
         return $this->hasOne(Contact::class);
     }

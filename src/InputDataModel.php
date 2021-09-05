@@ -1,46 +1,63 @@
 <?php
 
-namespace DevAdamlar\LaravelId3global\Traits;
+namespace DevAdamlar\LaravelId3global;
 
+use ID3Global\Exceptions\IdentityVerificationFailureException;
 use ID3Global\Identity\Address\AddressContainer;
 use ID3Global\Identity\Address\FixedFormatAddress;
 use ID3Global\Identity\ContactDetails;
 use ID3Global\Identity\Identity;
 use ID3Global\Identity\PersonalDetails;
 use ID3Global\Service\GlobalAuthenticationService;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
-use InvalidArgumentException;
 
-trait Verifiable
+class InputDataModel extends Model
 {
     private array $overrides;
 
     /**
+     * The array keys should correspond to the properties of `GlobalInputData` class specified in ID3global's WSDL documentation.
+     * The array should be flat. You can use a dot separator to specify the nested properties.
+     *
+     * @var array
+     */
+    protected array $authenticateSpFields = [];
+
+    /**
      * Sends an AuthenticateSP request
      *
-     * @param string $profileId
-     * @param int $profileVersion
-     * @param array $overrides
+     * @param string $profileId    The ID of the profile you want to use. Login to the ID3global's GlobalAdmin page to get the IDs.
+     * @param int $profileVersion  Version of the profile to be used. The latest version will be used if not specified.
+     * @param array $overrides     The array structure should correspond to the `GlobalInputData` class
+     *                             specified in ID3global's WSDL documentation.
+     *                             The array should be flat. You can use a dot separator to specify the nested properties.
      *
      * @return string
      *
+     * @throws IdentityVerificationFailureException
      */
-    public function verify(string $profileId, int $profileVersion = 0, array $overrides = []): string
+    public function authenticateSp(string $profileId, int $profileVersion = 0, array $overrides = []): string
     {
-        $identity = $this->makeIdentity($overrides);
+        $identity = $this->makeInputData($overrides);
 
+        /** @var GlobalAuthenticationService $service */
         $service = App::make(GlobalAuthenticationService::class);
 
-        return $service->verifyIdentity($identity, $profileId, $profileVersion);
+        $service->setProfileId($profileId)->setProfileVersion($profileVersion);
+
+        return $service->verifyIdentity($identity);
     }
 
     /**
-     * Makes an Identity object to be sent to the ID3global API
+     * Makes an Identity object from the Eloquent to be sent to the ID3global API
      *
-     * @param array $overrides
+     * @param array $overrides The array structure should correspond to the `GlobalInputData` class
+     *                          specified in ID3global's WSDL documentation
+     *
      * @return Identity
      */
-    public function makeIdentity(array $overrides = []): Identity
+    public function makeInputData(array $overrides = []): Identity
     {
         $this->overrides = $overrides;
 
@@ -119,15 +136,12 @@ trait Verifiable
         if (array_key_exists($fieldName, $this->overrides)) {
             return $this->overrides[$fieldName];
         }
-        if (array_key_exists($fieldName, $this->verifiables)) {
-            $attributeTree = explode('.', $this->verifiables[$fieldName]);
+        if (array_key_exists($fieldName, $this->authenticateSpFields)) {
+            $attributeTree = explode('.', $this->authenticateSpFields[$fieldName]);
             $value = $this;
-            foreach ($attributeTree as $key => $attribute) {
-                if ($value == null) {
-                    throw new InvalidArgumentException("Could not access $attribute on {$attributeTree[$key - 1]}");
-                }
 
-                $value = $value->{$attribute};
+            foreach ($attributeTree as $key => $attribute) {
+                $value = $value->{$attribute} ?? null;
             }
 
             return $value;
