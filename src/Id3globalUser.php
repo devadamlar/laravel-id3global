@@ -9,10 +9,10 @@ use ID3Global\Identity\ContactDetails;
 use ID3Global\Identity\Identity;
 use ID3Global\Identity\PersonalDetails;
 use ID3Global\Service\GlobalAuthenticationService;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\App;
 
-class InputDataModel extends Model
+class Id3globalUser extends User
 {
     private array $overrides;
 

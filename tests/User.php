@@ -3,11 +3,11 @@
 namespace DevAdamlar\LaravelId3global\Tests;
 
 use DateTime;
-use DevAdamlar\LaravelId3global\InputDataModel;
+use DevAdamlar\LaravelId3global\Id3globalUser;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class User extends InputDataModel
+class User extends Id3globalUser
 {
     use WithFaker;
 

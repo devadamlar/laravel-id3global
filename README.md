@@ -21,14 +21,14 @@ The pilot site will be used if the `APP_ENV` is different than `Production`. You
 
 ## Usage
 
-Extend your Eloquent models from `InputDataModel` instead of `Model`.
+Extend your Eloquent models from `Id3globalUser` instead of `User`.
 You can now call `authenticateSp` method on that model to do a verification. If you need to make a `GlobalInputData` from the Eloquent without sending a request, just call the `makeIdentity` method on the model.
 
 You can override the `$authenticateSpFields` property to map the model's attributes to the ID3global's `GlobalInputData` properties.
 If you want to map an attribute from a relationship, put the name of the relationship, and the attribute separated by a dot:
 
 ```php
-class User extends \DevAdamlar\LaravelId3global\InputDataModel
+class User extends \DevAdamlar\LaravelId3global\Id3globalUser
 {
     protected array $authenticateSpFields = [
         'Personal.PersonalDetails.Gender' => 'sex',
