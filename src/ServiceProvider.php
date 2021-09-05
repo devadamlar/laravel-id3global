@@ -17,7 +17,7 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->app->bind(GlobalAuthenticationService::class, function (Application $app) {
             $pilot = config('use_pilot') || !$app->environment('Production');
 
-            $gateway = new GlobalAuthenticationGateway(config('username'), config('password'), [], $pilot);
+            $gateway = new GlobalAuthenticationGateway(config('id3global.username'), config('id3global.password'), [], $pilot);
 
             if ($app->environment('testing')) {
                 $gateway = new GlobalAuthenticationGatewayFake(config('username'), config('password'));
