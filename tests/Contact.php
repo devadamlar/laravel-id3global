@@ -2,7 +2,6 @@
 
 namespace DevAdamlar\LaravelId3global\Tests;
 
-
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Testing\WithFaker;
 
