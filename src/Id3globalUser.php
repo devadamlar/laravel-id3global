@@ -27,14 +27,16 @@ class Id3globalUser extends User
     /**
      * Sends an AuthenticateSP request.
      *
-     * @param string $profileId The ID of the profile you want to use. Login to the ID3global's GlobalAdmin page to get the IDs.
-     * @param int $profileVersion Version of the profile to be used. The latest version will be used if not specified.
-     * @param array $overrides The array structure should correspond to the `GlobalInputData` class
-     *                               specified in ID3global's WSDL documentation.
-     *                               The array should be flat. You can use a dot separator to specify the nested properties.
+     * @param string $profileId         The ID of the profile you want to use. Login to the ID3global's GlobalAdmin page to get the IDs.
+     * @param int    $profileVersion    Version of the profile to be used. The latest version will be used if not specified.
+     * @param array  $overrides         The array structure should correspond to the `GlobalInputData` class
+     *                                  specified in ID3global's WSDL documentation.
+     *                                  The array should be flat. You can use a dot separator to specify the nested properties.
      * @param string $customerReference
-     * @return string
+     *
      * @throws IdentityVerificationFailureException
+     *
+     * @return string
      */
     public function authenticateSp(string $profileId, int $profileVersion = 0, array $overrides = [], string $customerReference = ''): string
     {
