@@ -56,5 +56,4 @@ class Id3globalService extends Facade
 
         return $service->verifyIdentity($identity, $customerReference);
     }
-
 }
