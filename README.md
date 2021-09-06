@@ -17,19 +17,21 @@ ID3GLOBAL_USERNAME=
 ID3GLOBAL_PASSWORD=
 ```
 
-The pilot site will be used if the `APP_ENV` is different than `Production`. You can override this by setting the `ID3GLOBAL_USE_PILOT` variable in the environment file.
+The pilot site will be used if the `APP_ENV` is other than `Production`. You can override this by setting the `ID3GLOBAL_USE_PILOT` variable in the environment file.
 
 ## Usage
 
-Extend your Eloquent models from `Id3globalUser` instead of `User`.
-You can now call `authenticateSp` method on that model to do a verification. If you need to make a `GlobalInputData` from the Eloquent without sending a request, just call the `makeIdentity` method on the model.
+Use the `Verifiable` trait inside your Eloquent models to convert them into a `GlobalInputData` object with the `makeInputData` method.
+You can now call `authenticateSp` method of the `Id3globalService` facade and pass in the created object to do a verification.
 
-You can override the `$authenticateSpFields` property to map the model's attributes to the ID3global's `GlobalInputData` properties.
+You can set the `$authenticateSpFields` array inside your model to override the names of attributes to be mapped to the ID3global's `GlobalInputData` properties.
 If you want to map an attribute from a relationship, put the name of the relationship, and the attribute separated by a dot:
 
 ```php
-class User extends \DevAdamlar\LaravelId3global\Id3globalUser
+class User extends \Illuminate\Database\Eloquent\Model
 {
+    use \DevAdamlar\LaravelId3global\Verifiable;
+    
     protected array $authenticateSpFields = [
         'Personal.PersonalDetails.Gender' => 'sex',
         'ContactDetails.MobileTelephone.Number' => 'contact.mobile',
