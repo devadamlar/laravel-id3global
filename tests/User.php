@@ -3,13 +3,15 @@
 namespace DevAdamlar\LaravelId3global\Tests;
 
 use DateTime;
-use DevAdamlar\LaravelId3global\Id3globalUser;
+use DevAdamlar\LaravelId3global\Verifiable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Testing\WithFaker;
 
-class User extends Id3globalUser
+class User extends Model
 {
     use WithFaker;
+    use Verifiable;
 
     public ?string $email;
     public ?string $first_name;

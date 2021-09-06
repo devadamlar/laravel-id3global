@@ -3,6 +3,8 @@
 namespace DevAdamlar\LaravelId3global\Tests;
 
 use Carbon\Carbon;
+use DevAdamlar\LaravelId3global\Id3globalService;
+use ID3Global\Exceptions\IdentityVerificationFailureException;
 use ID3Global\Identity\Address\AddressContainer;
 use ID3Global\Identity\Address\FixedFormatAddress;
 use ID3Global\Identity\Identity;
@@ -51,10 +53,16 @@ class Id3globalTest extends TestCase
         ];
     }
 
+    /**
+     * @throws IdentityVerificationFailureException
+     */
     public function test_verify_returns_valid_response()
     {
+        // Arrange
+        Id3globalService::fake();
+
         // Act
-        $response = $this->user->authenticateSp('profile-id');
+        $response = Id3globalService::authenticateSp($this->user->makeInputData(), 'profile-id', 0);
 
         // Assert
         $this->assertSame(GlobalAuthenticationGatewayFake::IDENTITY_BAND_PASS, $response);
