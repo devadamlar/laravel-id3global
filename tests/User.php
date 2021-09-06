@@ -10,7 +10,8 @@ use Illuminate\Foundation\Testing\WithFaker;
 
 class User extends Model
 {
-    use WithFaker, Verifiable;
+    use WithFaker;
+    use Verifiable;
 
     public ?string $email;
     public ?string $first_name;
