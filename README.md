@@ -24,7 +24,7 @@ The pilot site will be used if the `APP_ENV` is other than `Production`. You can
 Use the `Verifiable` trait inside your Eloquent models to convert them into a `GlobalInputData` object with the `makeInputData` method.
 You can now call `authenticateSp` method of the `Id3globalService` facade and pass in the created object to do a verification.
 
-You can set the `$authenticateSpFields` array inside your model to override the names of attributes to be mapped to the ID3global's `GlobalInputData` properties.
+You can set the `$globalInputData` array inside your model to override the names of attributes to be mapped to the ID3global's `GlobalInputData` properties.
 If you want to map an attribute from a relationship, put the name of the relationship, and the attribute separated by a dot:
 
 ```php
@@ -32,7 +32,7 @@ class User extends \Illuminate\Database\Eloquent\Model
 {
     use \DevAdamlar\LaravelId3global\Verifiable;
     
-    protected array $authenticateSpFields = [
+    protected array $globalInputData = [
         'Personal.PersonalDetails.Gender' => 'sex',
         'ContactDetails.MobileTelephone.Number' => 'contact.mobile',
     ];

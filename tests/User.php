@@ -26,7 +26,7 @@ class User extends Model
     public ?string $mobile;
     public ?string $work_phone;
 
-    protected array $authenticateSpFields = [
+    protected array $globalInputData = [
         'Personal.PersonalDetails.Gender'       => 'sex',
         'ContactDetails.MobileTelephone.Number' => 'contact.mobile',
     ];
