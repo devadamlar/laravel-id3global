@@ -11,9 +11,9 @@ use ID3Global\Identity\PersonalDetails;
 /**
  * Trait Id3globalUser.
  *
- * @property array $globalInputData The array keys should correspond to the properties of `GlobalInputData` class
- *                                  specified in ID3global's WSDL documentation. The array should be flat.
- *                                  You can use a dot separator to specify the nested properties.
+ * @property array $inputData The array keys should correspond to the properties of `GlobalInputData` class
+ *                            specified in ID3global's WSDL documentation. The array should be flat.
+ *                            You can use a dot separator to specify the nested properties.
  */
 trait Verifiable
 {
@@ -106,8 +106,8 @@ trait Verifiable
         if (array_key_exists($fieldName, $this->overrides)) {
             return $this->overrides[$fieldName];
         }
-        if (array_key_exists($fieldName, $this->globalInputData)) {
-            $attributeTree = explode('.', $this->globalInputData[$fieldName]);
+        if (array_key_exists($fieldName, $this->inputData)) {
+            $attributeTree = explode('.', $this->inputData[$fieldName]);
             $value = $this;
 
             foreach ($attributeTree as $key => $attribute) {
