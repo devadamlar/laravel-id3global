@@ -31,7 +31,7 @@ class Id3globalService extends Facade
     public static function fake(string $bandText = 'PASS', int $score = 3000): GlobalAuthenticationService
     {
         $gateway = new GlobalAuthenticationGatewayFake('username', 'password');
-//        $gateway->setBandText($bandText)->setScore($score);
+        $gateway->setBandText($bandText)->setScore($score);
 
         self::swap($service = new GlobalAuthenticationService($gateway));
 
@@ -52,6 +52,7 @@ class Id3globalService extends Facade
      */
     public static function authenticateSp(Identity $identity, string $profileId, int $profileVersion = 0, ?string $customerReference = null): string
     {
+        /** @var GlobalAuthenticationService $service */
         $service = self::setProfileId($profileId)->setProfileVersion($profileVersion);
 
         return $service->verifyIdentity($identity, $customerReference);

@@ -62,7 +62,7 @@ class Id3globalTest extends TestCase
         Id3globalService::fake();
 
         // Act
-        $response = Id3globalService::authenticateSp($this->user->makeInputData(), 'profile-id', 0);
+        $response = Id3globalService::authenticateSp($this->user->makeInputData(), 'profile-id');
 
         // Assert
         $this->assertSame(GlobalAuthenticationGatewayFake::IDENTITY_BAND_PASS, $response);

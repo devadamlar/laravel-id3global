@@ -28,22 +28,26 @@ You can set the `$globalInputData` array inside your model to override the names
 If you want to map an attribute from a relationship, put the name of the relationship, and the attribute separated by a dot:
 
 ```php
-class User extends \Illuminate\Database\Eloquent\Model
+use DevAdamlar\LaravelId3global\Verifiable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+
+class User extends Model
 {
-    use \DevAdamlar\LaravelId3global\Verifiable;
+    use Verifiable;
     
     protected array $globalInputData = [
         'Personal.PersonalDetails.Gender' => 'sex',
         'ContactDetails.MobileTelephone.Number' => 'contact.mobile',
     ];
     
-    public function contact(): \Illuminate\Database\Eloquent\Relations\HasOne
+    public function contact(): HasOne
     {
         return $this->hasOne(Contact::class);
     }
 }
 
-class Contact extends \Illuminate\Database\Eloquent\Model
+class Contact extends Model
 {
 
 }
