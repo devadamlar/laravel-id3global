@@ -14,7 +14,8 @@ class ServiceProvider extends \Illuminate\Support\ServiceProvider
         $this->mergeConfigFrom($configPath, 'id3global');
 
         $this->app->singleton(GlobalAuthenticationService::class, function (Application $app) {
-            $pilot = config('id3global.use_pilot') ?: !$app->environment('Production');
+            $pilot = config('id3global.use_pilot')
+                ?? !$app->environment('Production', 'production', 'PRODUCTION', 'Prod', 'prod', 'PROD');
 
             $gateway = new GlobalAuthenticationGateway(config('id3global.username'), config('id3global.password'), [], $pilot);
 
